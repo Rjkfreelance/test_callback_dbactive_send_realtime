@@ -42,7 +42,7 @@ const long  gmtOffset_sec = 7 * 3600;
 const int   daylightOffset_sec = 0;
 
 String datareceivedmqtt; // receive OK from DBserv
-bool dbready = false;
+volatile bool dbready = false;
 int checksettime = 0;
 
 WiFiClient FMXClient;
@@ -238,14 +238,14 @@ void ChkDB(){
         dbready = false;
         Serial.println(dbready);
       }
-    
+     dbready = false;
     
 }
 
 void taskChkDB( void * pvParameters ){
    while(1){
       ChkDB();
-      dbready = false; 
+      dbready = 0; 
       client.loop();//mqtt loop 
       vTaskDelay(500 / portTICK_PERIOD_MS);  
    }
